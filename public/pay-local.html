@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Local test checkout · Fitted</title>
+<link rel="stylesheet" href="/style.css">
+<link rel="icon" href="/icon.svg">
+</head>
+<body>
+<main class="wrap" style="max-width:520px">
+  <div class="card stack" style="margin-top:48px">
+    <span class="label">Local test checkout</span>
+    <h2>No Stripe key is set</h2>
+    <p class="muted">This stands in for Stripe Checkout so the flow can be tried offline. Set <code>STRIPE_SECRET_KEY</code> and connect a Stripe account to use real Checkout with Stripe Connect.</p>
+    <div class="row"><a class="btn accent" id="pay">Simulate successful payment</a><a class="btn ghost" id="cancel">Cancel</a></div>
+  </div>
+</main>
+<script>
+const p = new URLSearchParams(location.search);
+const slug = encodeURIComponent(p.get('slug') || '');
+document.getElementById('pay').href = `/b/${slug}/done?session_id=${encodeURIComponent(p.get('session_id') || '')}`;
+document.getElementById('cancel').href = `/b/${slug}`;
+</script>
+</body>
+</html>

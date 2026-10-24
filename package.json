@@ -1,0 +1,24 @@
+{
+  "name": "fitted",
+  "version": "0.1.0",
+  "description": "Describe your business; get booking software that fits it. Stripe Connect payments, Supabase Postgres, AI-generated spec.",
+  "directories": {
+    "doc": "docs",
+    "test": "test"
+  },
+  "scripts": {
+    "start": "node --env-file-if-exists=.env.local server/server.mjs",
+    "dev": "node --watch --env-file-if-exists=.env.local server/server.mjs",
+    "test": "node --test test/*.test.mjs",
+    "seed": "node --env-file-if-exists=.env.local scripts/seed.mjs"
+  },
+  "type": "module",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.118.0",
+    "stripe": "^23.0.1"
+  },
+  "private": true,
+  "engines": {
+    "node": ">=22"
+  }
+}

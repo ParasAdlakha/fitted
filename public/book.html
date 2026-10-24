@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Book</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="/style.css">
+<link rel="icon" href="/icon.svg">
+<style>
+.top{display:flex;gap:14px;align-items:center;margin-bottom:22px}
+.top .em{width:56px;height:56px;border-radius:16px;display:grid;place-items:center;font-size:1.8rem;background:color-mix(in srgb,var(--accent) 14%,var(--surface));flex:none}
+.layout{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:20px;align-items:start}
+.basket{position:sticky;top:16px}
+.line{display:flex;justify-content:space-between;gap:12px;font-size:.92rem}
+.total{font:650 1.5rem/1 var(--display)}
+.done{max-width:560px;margin:40px auto;text-align:center}
+.done .tick{width:64px;height:64px;border-radius:50%;margin:0 auto;display:grid;place-items:center;background:var(--ok-soft);color:var(--ok);font-size:2rem}
+.foot{margin-top:40px;text-align:center;font-size:.8rem;color:var(--ink-3)}
+@media (max-width:860px){.layout{grid-template-columns:1fr}.basket{position:static}}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header class="top"><div class="em" id="emoji"></div><div style="min-width:0"><h1 id="name" style="font-size:clamp(1.6rem,4vw,2.4rem)"></h1><p class="muted" id="tagline"></p></div></header>
+
+  <div id="booking" class="layout" hidden>
+    <div class="stack" style="gap:18px">
+      <div class="tabs" id="offerings" role="group" aria-label="What would you like to book"></div>
+      <div class="days" id="days" role="group" aria-label="Day"></div>
+      <div class="card stack">
+        <div class="row" style="justify-content:space-between"><h3 id="timesTitle">Times</h3><span class="muted small" id="refreshNote"></span></div>
+        <div class="times" id="times"></div>
+        <p class="muted small" id="noTimes" hidden>Nothing bookable this day. Try another.</p>
+      </div>
+      <div class="card stack" id="mapCard">
+        <div class="row" style="justify-content:space-between"><h3 id="mapTitle"></h3>
+          <div class="legend"><span><i style="border-color:var(--ok)"></i>Free</span><span><i style="border-style:dashed;background:var(--surface-2)"></i>Taken</span><span><i style="border-color:var(--accent);background:color-mix(in srgb,var(--accent) 15%,white)"></i>Yours</span></div></div>
+        <div id="map"></div>
+        <p class="muted small" id="mapHint">Pick a time first.</p>
+      </div>
+    </div>
+
+    <aside class="basket card stack">
+      <h3>Your booking</h3>
+      <div class="stack" style="gap:6px" id="lines"><p class="muted small">Choose a time and a spot.</p></div>
+      <form id="form" class="stack" style="gap:10px">
+        <label class="field"><span>Name</span><input type="text" id="cname" required autocomplete="name"></label>
+        <label class="field"><span>Email</span><input type="email" id="cemail" required autocomplete="email"></label>
+        <div id="questions" class="stack" style="gap:10px"></div>
+        <div class="row" style="justify-content:space-between;align-items:end"><span class="label">Total</span><span class="total num" id="total">–</span></div>
+        <button class="btn accent" id="pay" type="submit" disabled>Pay and book</button>
+        <p class="err" id="err" hidden></p>
+        <p class="muted small" id="policy"></p>
+        <p class="muted small">Payments by Stripe go straight to <span id="bizName2"></span>.</p>
+      </form>
+    </aside>
+  </div>
+
+  <section id="done" class="done card stack" hidden>
+    <div class="tick">✓</div>
+    <h2>You're booked</h2>
+    <p class="muted" id="doneText"></p>
+    <a class="btn ghost" id="doneBack" href="#">Book another</a>
+  </section>
+
+  <p class="foot">Booking by <a href="/">Fitted</a></p>
+</main>
+
+<script type="module">
+import { $, h, api, applyTheme, floor, money, toast } from '/render.js';
+const slug = location.pathname.split('/')[2];
+const params = new URLSearchParams(location.search);
+const biz = await api(`/api/businesses/${slug}`).catch(() => null);
+if (!biz) { document.body.textContent = 'This business does not exist.'; throw 0; }
+const spec = biz.spec;
+document.title = `${spec.name} · Book`;
+applyTheme(spec);
+$('#emoji').textContent = spec.emoji; $('#name').textContent = spec.name; $('#tagline').textContent = spec.tagline; $('#bizName2').textContent = spec.name;
+
+const fmt = (iso, o) => new Intl.DateTimeFormat('en-GB', { timeZone: spec.timezone, ...o }).format(new Date(iso));
+
+if (location.pathname.endsWith('/done')) {
+  $('#done').hidden = false; $('#doneBack').href = `/b/${slug}`;
+  try {
+    const { booking } = await api(`/api/bookings/confirm?session_id=${encodeURIComponent(params.get('session_id') || '')}`);
+    const unit = spec.units.find((u) => u.key === booking.resource_key);
+    const off = spec.offerings.find((o) => o.key === booking.offering_key);
+    $('#doneText').textContent = `${off?.name} · ${unit?.name} · ${fmt(booking.starts_at, { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })}. Paid ${money(booking.amount_cents, booking.currency)}.`;
+  } catch (e) { $('#doneText').textContent = e.message; }
+  throw 0;
+}
+
+$('#booking').hidden = false;
+if (params.get('cancelled')) toast('Payment cancelled. Your spot was released.');
+$('#policy').textContent = spec.policies.notes || `Free cancellation up to ${spec.policies.cancellation_hours} hours before.`;
+$('#mapTitle').textContent = `Choose your ${spec.unit_label.toLowerCase()}`;
+
+const state = { offering: spec.offerings[0].key, day: null, start: null, unit: null, slots: [] };
+
+// Customer questions the owner asked for
+$('#questions').replaceChildren(...spec.questions.map((q) => h('label', { class: 'field' }, h('span', {}, q.label),
+  q.kind === 'select' ? h('select', { name: q.key }, h('option', { value: '' }, 'Choose…'), ...q.options.map((o) => h('option', {}, o)))
+    : q.kind === 'yesno' ? h('select', { name: q.key }, h('option', {}, 'No'), h('option', {}, 'Yes'))
+    : h('input', { type: 'text', name: q.key }))));
+
+function localDay(offset) {
+  const d = new Date(Date.now() + offset * 86400000);
+  return new Intl.DateTimeFormat('en-CA', { timeZone: spec.timezone, year: 'numeric', month: '2-digit', day: '2-digit' }).format(d);
+}
+
+function renderOfferings() {
+  $('#offerings').replaceChildren(...spec.offerings.map((o) => h('button', { type: 'button', class: 'pick', 'aria-pressed': String(o.key === state.offering), onclick: () => { state.offering = o.key; state.start = null; state.unit = null; renderOfferings(); load(); } },
+    h('b', {}, o.name), h('small', {}, `${o.duration_minutes} min · from ${money(o.price_cents, spec.currency)}`))));
+}
+
+function renderDays() {
+  $('#days').replaceChildren(...Array.from({ length: 10 }, (_, i) => {
+    const d = localDay(i);
+    const date = new Date(`${d}T12:00:00Z`);
+    return h('button', { type: 'button', class: 'pick', 'aria-pressed': String(d === state.day), onclick: () => { state.day = d; state.start = null; state.unit = null; renderDays(); load(); } },
+      h('small', {}, i === 0 ? 'Today' : i === 1 ? 'Tomorrow' : date.toLocaleDateString('en-GB', { weekday: 'short', timeZone: 'UTC' })),
+      h('b', {}, date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' })));
+  }));
+}
+
+async function load(quiet) {
+  const res = await api(`/api/businesses/${slug}/availability?date=${state.day}&offering=${state.offering}`).catch(() => null);
+  if (!res) return;
+  state.slots = res.slots;
+  const cur = state.slots.find((s) => s.start === state.start);
+  if (cur && state.unit && !cur.free.includes(state.unit)) { state.unit = null; toast('Someone just booked that spot. Pick another.'); }
+  render();
+  $('#refreshNote').textContent = `Live · updated ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}`;
+}
+
+function render() {
+  const slots = state.slots.filter((s) => !s.past);
+  $('#noTimes').hidden = slots.length > 0;
+  $('#times').replaceChildren(...slots.map((s) => h('button', {
+    type: 'button', class: 'pick', disabled: s.free.length === 0, 'aria-pressed': String(s.start === state.start),
+    onclick: () => { state.start = s.start; if (!s.free.includes(state.unit)) state.unit = null; render(); },
+  }, h('b', { class: 'num' }, s.start), h('small', {}, s.past ? 'past' : s.free.length ? `${s.free.length} free` : 'full'), s.peak && h('span', { class: 'peak' }, 'peak'))));
+  const slot = slots.find((s) => s.start === state.start);
+  const offering = spec.offerings.find((o) => o.key === state.offering);
+  $('#map').replaceChildren(floor(spec, { offering, free: slot ? slot.free : null, taken: slot ? slot.taken : [], selected: state.unit, onPick: slot ? (k) => { state.unit = k; render(); } : null }));
+  $('#mapHint').hidden = Boolean(slot);
+  const unit = spec.units.find((u) => u.key === state.unit);
+  $('#lines').replaceChildren(...(slot ? [
+    line(offering.name, `${offering.duration_minutes} min`),
+    line(fmt(slot.starts_at, { weekday: 'short', day: 'numeric', month: 'short' }), `${slot.start}–${fmt(slot.ends_at, { hour: '2-digit', minute: '2-digit' })}`),
+    line(spec.unit_label, unit ? unit.name : 'Pick one'),
+  ] : [h('p', { class: 'muted small' }, 'Choose a time and a spot.')]));
+  const extra = unit?.surcharge_cents || 0;
+  if (slot && extra) $('#lines').append(line(`${unit.note || unit.name} extra`, money(extra, spec.currency)));
+  const price = slot ? slot.price_cents + extra : 0;
+  $('#total').textContent = slot ? money(price, spec.currency) : '–';
+  $('#pay').disabled = !(slot && unit);
+  $('#pay').textContent = slot && unit ? `Pay ${money(price, spec.currency)} and book` : 'Pay and book';
+}
+const line = (a, b) => h('div', { class: 'line' }, h('span', { class: 'muted' }, a), h('b', {}, b));
+
+$('#form').onsubmit = async (e) => {
+  e.preventDefault();
+  $('#err').hidden = true; $('#pay').disabled = true;
+  const answers = Object.fromEntries([...$('#questions').querySelectorAll('[name]')].map((el) => [el.name, el.value]));
+  try {
+    const out = await api(`/api/businesses/${slug}/book`, { method: 'POST', body: { offering_key: state.offering, resource_key: state.unit, date: state.day, start: state.start, customer_name: $('#cname').value, customer_email: $('#cemail').value, answers } });
+    location.href = out.url;
+  } catch (err) {
+    $('#err').textContent = err.message; $('#err').hidden = false;
+    if (err.status === 409) { state.unit = null; load(); } else $('#pay').disabled = false;
+  }
+};
+
+// Pick the first day with times
+state.day = localDay(0);
+renderOfferings(); renderDays();
+for (let i = 0; i < 10; i++) {
+  state.day = localDay(i);
+  await load();
+  if (state.slots.some((s) => s.free.length)) break;
+}
+renderDays();
+setInterval(() => document.visibilityState === 'visible' && load(true), 5000);
+</script>
+</body>
+</html>

@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fitted · Booking software that fits your business</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="/style.css">
+<link rel="icon" href="/icon.svg">
+<style>
+.hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:28px;align-items:start;margin-top:20px}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.examples{display:flex;gap:8px;flex-wrap:wrap}
+.ex{border:1px dashed var(--line-2);background:transparent;border-radius:999px;padding:7px 12px;font-size:.85rem;cursor:pointer;color:var(--ink-2)}
+.ex:hover{border-color:var(--ink-2);color:var(--ink)}
+.preview{position:sticky;top:16px}
+.phead{display:flex;gap:12px;align-items:center}
+.phead .em{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-size:1.4rem;background:color-mix(in srgb,var(--accent) 14%,var(--surface))}
+.empty{display:grid;place-items:center;min-height:360px;text-align:center;color:var(--ink-3);border:1.5px dashed var(--line-2);border-radius:var(--r);padding:24px}
+.cost{font:500 .78rem/1.4 var(--mono);color:var(--ink-2);background:var(--surface-2);border-radius:8px;padding:8px 10px}
+.list{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+.biz{display:flex;gap:10px;align-items:center;text-decoration:none;padding:12px 14px}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.steps .card{padding:16px}
+.steps b{font-family:var(--mono);font-size:.75rem;color:var(--ink-3)}
+@media (max-width:860px){.hero{grid-template-columns:1fr}.preview{position:static}}
+</style>
+</head>
+<body>
+<nav class="nav"><a class="logo" href="/"><i>F</i>Fitted</a><div class="status" id="status"></div></nav>
+<main class="wrap stack" style="gap:40px">
+  <section class="hero">
+    <div class="stack" style="gap:20px">
+      <span class="label">For small businesses · Stripe Connect · Supabase · AI</span>
+      <h1>Describe your business. Get booking software that <em>fits it</em>.</h1>
+      <p class="muted" style="font-size:1.05rem;max-width:52ch">A padel club, a spin studio and a salon need different software. Write one paragraph; Fitted configures the booking app, takes payments straight into your Stripe account and blocks double bookings.</p>
+      <form id="gen" class="card stack">
+        <label class="field"><span>Tell us about your business</span>
+          <textarea id="prompt" required minlength="10" placeholder="We're a padel club with 4 courts…"></textarea></label>
+        <div class="examples" aria-label="Examples">
+          <button type="button" class="ex" data-ex="We're a padel club in Prenzlauer Berg with 4 courts, 2 indoor and 2 outdoor. 90 minute matches are €32, €40 after 5pm. Open 8am to 11pm every day. Ask if they want to rent rackets.">🎾 Padel club</button>
+          <button type="button" class="ex" data-ex="Spin studio in Kreuzberg. 18 bikes in 3 rows facing the instructor. Rhythm Ride is 45 min for €18, weekdays 7am and Mon–Sat 6:30pm. Hill Climb 60 min €22 Tue, Thu and Sat at 10am. People should pick their bike. Ask shoe size.">🚴 Spin studio, bike map</button>
+          <button type="button" class="ex" data-ex="Hair salon in Neukölln, three stylists: Mira (owner, colour), Jonas (cuts and fades) and Lea (junior). Cut and style €45 for 45 min, skin fade €30 for 30 min (Jonas or Lea only), full colour €110, 2 hours, Mira only. Tue–Sat 10 to 7.">💇 Salon, staff scheduling</button>
+        </div>
+        <div class="row"><button class="btn accent" id="go" type="submit">Generate my app</button><span class="muted small" id="genNote">One AI call, about $0.002.</span></div>
+        <p class="err" id="genErr" hidden></p>
+      </form>
+      <div class="steps">
+        <div class="card stack" style="gap:6px"><b>01 · AI</b><h3>Configure</h3><p class="muted small">Your words become a spec: units, offerings, hours, floor map, prices.</p></div>
+        <div class="card stack" style="gap:6px"><b>02 · Stripe Connect</b><h3>Get paid</h3><p class="muted small">Customers pay you directly. Fitted keeps a 3% platform fee.</p></div>
+        <div class="card stack" style="gap:6px"><b>03 · Supabase</b><h3>Never double-book</h3><p class="muted small">Postgres rejects overlapping bookings, even when two people click at once.</p></div>
+      </div>
+    </div>
+
+    <aside class="preview" aria-live="polite">
+      <div class="empty" id="empty"><div class="stack" style="gap:8px;align-items:center"><span style="font-size:2rem">✨</span><p>Your app preview appears here.</p></div></div>
+      <div class="card stack" id="draft" hidden>
+        <div class="phead"><div class="em" id="pEmoji"></div><div style="min-width:0"><h2 id="pName"></h2><p class="muted small" id="pTag"></p></div></div>
+        <div id="pFloor"></div>
+        <div id="pFacts"></div>
+        <p class="cost" id="pCost"></p>
+        <form id="pub" class="stack" style="gap:10px">
+          <label class="field"><span>Your email (for the Stripe account)</span><input type="email" id="email" placeholder="you@business.com"></label>
+          <div class="row"><button class="btn accent" type="submit" id="pubBtn">Publish my app</button><button class="btn ghost" type="button" id="again">Try again</button></div>
+          <p class="err" id="pubErr" hidden></p>
+        </form>
+      </div>
+    </aside>
+  </section>
+
+  <section class="stack" id="recentWrap" hidden>
+    <h2>Live on Fitted</h2>
+    <div class="list" id="recent"></div>
+  </section>
+</main>
+
+<script type="module">
+import { $, h, api, applyTheme, floor, summary, ownerKey, statusChips } from '/render.js';
+statusChips($('#status'));
+let draft = null;
+
+document.querySelectorAll('.ex').forEach((b) => b.onclick = () => { $('#prompt').value = b.dataset.ex; $('#prompt').focus(); });
+
+$('#gen').onsubmit = async (e) => {
+  e.preventDefault();
+  const go = $('#go');
+  go.disabled = true; go.replaceChildren(h('span', { class: 'spinner' }), 'Configuring…');
+  $('#genErr').hidden = true;
+  try {
+    draft = { prompt: $('#prompt').value, ...(await api('/api/generate', { method: 'POST', body: { prompt: $('#prompt').value } })) };
+    show(draft);
+  } catch (err) { $('#genErr').textContent = err.message; $('#genErr').hidden = false; }
+  go.disabled = false; go.textContent = 'Generate my app';
+};
+
+function show({ spec, usage }) {
+  applyTheme(spec);
+  $('#empty').hidden = true; $('#draft').hidden = false;
+  $('#pEmoji').textContent = spec.emoji; $('#pName').textContent = spec.name; $('#pTag').textContent = spec.tagline;
+  $('#pFloor').replaceChildren(floor(spec, {}));
+  $('#pFacts').replaceChildren(summary(spec));
+  $('#pCost').textContent = `${usage.model} · ${usage.input_tokens + usage.output_tokens} tokens · $${usage.cost_usd.toFixed(4)} · ${(usage.ms / 1000).toFixed(1)} s. Bookings never call the model.`;
+  $('#draft').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+$('#again').onclick = () => $('#gen').requestSubmit();
+
+$('#pub').onsubmit = async (e) => {
+  e.preventDefault();
+  $('#pubBtn').disabled = true; $('#pubErr').hidden = true;
+  try {
+    const out = await api('/api/businesses', { method: 'POST', body: { prompt: draft.prompt, spec: draft.spec, usage: draft.usage, owner_email: $('#email').value } });
+    ownerKey.set(out.slug, out.owner_key);
+    location.href = `/owner/${out.slug}?new=1`;
+  } catch (err) { $('#pubErr').textContent = err.message; $('#pubErr').hidden = false; $('#pubBtn').disabled = false; }
+};
+
+api('/api/businesses').then((list) => {
+  if (!list.length) return;
+  $('#recentWrap').hidden = false;
+  $('#recent').replaceChildren(...list.map((b) => h('a', { class: 'card biz', href: `/b/${b.slug}` }, h('span', { style: { fontSize: '1.5rem' } }, b.emoji), h('span', { style: { minWidth: 0 } }, h('b', {}, b.name), h('br'), h('small', { class: 'muted' }, b.vertical)))));
+}).catch(() => {});
+</script>
+</body>
+</html>

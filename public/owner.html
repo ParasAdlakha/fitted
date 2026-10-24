@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Owner dashboard · Fitted</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="/style.css">
+<link rel="icon" href="/icon.svg">
+<style>
+.grid2{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:16px;align-items:start}
+.share{display:flex;gap:8px;align-items:center;background:var(--surface-2);border-radius:10px;padding:8px 8px 8px 12px;min-width:0}
+.share code{font:500 .85rem var(--mono);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0}
+.connect{border-left:4px solid var(--accent)}
+.versions{display:flex;flex-direction:column;gap:8px;font-size:.88rem;margin:0;padding:0;list-style:none}
+.versions li{display:flex;gap:10px}
+.versions b{font-family:var(--mono);font-size:.75rem;color:var(--ink-3);flex:none;padding-top:2px}
+.prompt{font-size:.88rem;color:var(--ink-2);border-left:3px solid var(--line-2);padding-left:12px;white-space:pre-wrap}
+@media (max-width:860px){.grid2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<nav class="nav"><a class="logo" href="/"><i>F</i>Fitted</a><div class="status" id="status"></div></nav>
+<main class="wrap stack" style="gap:20px">
+  <p class="err card" id="noKey" hidden>This dashboard needs the owner key from the browser that published the app.</p>
+  <div id="app" class="stack" style="gap:20px" hidden>
+    <header class="row" style="justify-content:space-between;gap:16px">
+      <div class="row" style="gap:14px;min-width:0"><span style="font-size:2.2rem" id="emoji"></span><div style="min-width:0"><span class="label">Owner dashboard</span><h1 id="name" style="font-size:clamp(1.6rem,4vw,2.4rem)"></h1></div></div>
+      <div class="share" style="max-width:420px;flex:1"><code id="link"></code><button class="btn small ghost" id="copy">Copy</button><a class="btn small accent" id="open" target="_blank">Open</a></div>
+    </header>
+
+    <section class="card connect stack" id="connectCard">
+      <div class="row" style="justify-content:space-between;gap:16px">
+        <div class="stack" style="gap:4px;min-width:0;flex:1"><h3 id="connTitle">Connect Stripe to take payments</h3><p class="muted small" id="connText">Fitted creates a Stripe Express account for your business. Customer payments land in your account.</p></div>
+        <div class="row"><button class="btn accent" id="connect">Connect with Stripe</button><a class="btn ghost" id="stripeDash" target="_blank" hidden>Stripe dashboard</a></div>
+      </div>
+    </section>
+
+    <section class="stats" id="stats"></section>
+
+    <div class="grid2">
+      <section class="card stack">
+        <h2>Change your app in plain words</h2>
+        <form id="refine" class="stack" style="gap:10px">
+          <textarea id="instruction" style="min-height:80px" placeholder="Add a fifth court, outdoor. Make Sunday mornings €25."></textarea>
+          <div class="row"><button class="btn" id="refBtn" type="submit">Apply change</button><span class="muted small" id="refNote"></span></div>
+          <p class="err" id="refErr" hidden></p>
+        </form>
+        <div id="floor"></div>
+        <div id="facts"></div>
+      </section>
+      <aside class="stack">
+        <section class="card stack"><h3>What you told us</h3><p class="prompt" id="prompt"></p></section>
+        <section class="card stack"><h3>Versions</h3><ul class="versions" id="versions"></ul></section>
+        <section class="card stack"><h3>AI cost so far</h3><div class="tbl"><table style="min-width:0"><thead><tr><th>Call</th><th>Tokens</th><th>Cost</th></tr></thead><tbody id="aiRows"></tbody></table></div><p class="muted small">AI runs only when you set up or change the app. Customer bookings never call a model, so cost does not grow with bookings.</p></section>
+      </aside>
+    </div>
+
+    <section class="stack">
+      <h2>Bookings</h2>
+      <div class="tbl"><table><thead><tr><th>When</th><th>What</th><th id="unitHead">Unit</th><th>Customer</th><th>Paid</th><th>Status</th></tr></thead><tbody id="rows"></tbody></table></div>
+    </section>
+  </div>
+</main>
+
+<script type="module">
+import { $, h, api, applyTheme, floor, summary, money, ownerKey, toast, statusChips } from '/render.js';
+statusChips($('#status'));
+const slug = location.pathname.split('/')[2];
+const params = new URLSearchParams(location.search);
+if (params.get('key')) { ownerKey.set(slug, params.get('key')); history.replaceState(null, '', location.pathname); }
+const key = ownerKey.get(slug);
+if (!key) { $('#noKey').hidden = false; throw 0; }
+const bookUrl = `${location.origin}/b/${slug}`;
+$('#link').textContent = bookUrl; $('#open').href = bookUrl;
+$('#copy').onclick = () => navigator.clipboard.writeText(bookUrl).then(() => toast('Link copied'));
+
+async function load() {
+  const d = await api(`/api/businesses/${slug}/dashboard`, { key });
+  const spec = d.spec;
+  applyTheme(spec);
+  document.title = `${spec.name} · Fitted`;
+  $('#app').hidden = false;
+  $('#emoji').textContent = spec.emoji; $('#name').textContent = spec.name; $('#prompt').textContent = d.prompt;
+  $('#unitHead').textContent = spec.unit_label;
+  $('#instruction').placeholder = { resource: `Add another ${spec.unit_label.toLowerCase()}. Close at 20:00 on Sundays.`, class: 'Add a Sunday 11:00 class. Front-row bikes cost €4 more.', staff: `Add a new ${spec.unit_label.toLowerCase()}, Sam, who only does cuts.` }[spec.mode];
+  $('#floor').replaceChildren(floor(spec, {}));
+  $('#facts').replaceChildren(summary(spec));
+  const fee = (await api('/api/status')).fee_percent;
+
+  const ready = d.stripe.charges_enabled;
+  $('#connTitle').textContent = ready ? 'Stripe connected. You can take payments.' : d.stripe.account_id ? 'Finish your Stripe setup' : 'Connect Stripe to take payments';
+  $('#connect').textContent = ready ? 'Update details' : d.stripe.account_id ? 'Continue setup' : 'Connect with Stripe';
+  $('#connect').className = ready ? 'btn ghost' : 'btn accent';
+  $('#stripeDash').hidden = !d.stripe.dashboard; if (d.stripe.dashboard) $('#stripeDash').href = d.stripe.dashboard;
+  $('#connText').textContent = ready ? `Account ${d.stripe.account_id}. Payouts go to your bank on Stripe's schedule. Fitted keeps a ${fee}% platform fee.` : `Fitted creates a Stripe Express account for your business. Customer payments land in your account; Fitted keeps a ${fee}% platform fee.`;
+
+  const ai = d.ai;
+  $('#stats').replaceChildren(
+    stat(d.totals.paid_count, 'paid bookings'),
+    stat(money(d.totals.gross_cents, spec.currency), 'paid by customers'),
+    stat(money(d.totals.gross_cents - d.totals.fee_cents, spec.currency), 'to your Stripe account'),
+    stat(`$${ai.cost_usd.toFixed(4)}`, `AI cost, ${ai.calls.length} call${ai.calls.length === 1 ? '' : 's'}`),
+  );
+  $('#aiRows').replaceChildren(...ai.calls.map((c) => h('tr', {}, h('td', {}, c.kind), h('td', { class: 'num' }, (c.input_tokens + c.output_tokens).toLocaleString()), h('td', { class: 'num' }, `$${Number(c.cost_usd).toFixed(4)}`))));
+  $('#versions').replaceChildren(...d.versions.map((v) => h('li', {}, h('b', {}, `v${v.version}`), h('span', {}, v.instruction))), h('li', {}, h('b', {}, 'v1'), h('span', { class: 'muted' }, 'Generated from your description')));
+  const fmt = (iso) => new Intl.DateTimeFormat('en-GB', { timeZone: spec.timezone, weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }).format(new Date(iso));
+  $('#rows').replaceChildren(...(d.bookings.length ? d.bookings.map((b) => h('tr', {},
+    h('td', { class: 'num' }, fmt(b.starts_at)),
+    h('td', {}, spec.offerings.find((o) => o.key === b.offering_key)?.name || b.offering_key),
+    h('td', {}, spec.units.find((u) => u.key === b.resource_key)?.name || b.resource_key),
+    h('td', {}, b.customer_name, ...Object.entries(b.answers || {}).filter(([, v]) => v).map(([k, v]) => h('div', { class: 'muted small' }, `${spec.questions.find((q) => q.key === k)?.label || k}: ${v}`))),
+    h('td', { class: 'num' }, money(b.amount_cents, spec.currency)),
+    h('td', {}, h('span', { class: `tag ${b.status}` }, b.status)),
+  )) : [h('tr', {}, h('td', { colspan: 6, class: 'muted' }, 'No bookings yet. Share your link.'))]));
+}
+const stat = (v, l) => h('div', { class: 'stat' }, h('b', {}, v), h('span', {}, l));
+
+$('#connect').onclick = async () => {
+  $('#connect').disabled = true;
+  try {
+    const out = await api(`/api/businesses/${slug}/connect`, { method: 'POST', key });
+    if (out.local) { toast('Local test account connected (no Stripe key set).'); await load(); }
+    else location.href = out.url;
+  } catch (e) { toast(e.message); }
+  $('#connect').disabled = false;
+};
+
+$('#refine').onsubmit = async (e) => {
+  e.preventDefault();
+  const btn = $('#refBtn');
+  btn.disabled = true; btn.replaceChildren(h('span', { class: 'spinner' }), 'Applying…'); $('#refErr').hidden = true;
+  try {
+    const out = await api(`/api/businesses/${slug}/refine`, { method: 'POST', key, body: { instruction: $('#instruction').value } });
+    $('#refNote').textContent = `v${out.spec_version} live · $${out.usage.cost_usd.toFixed(4)} · ${(out.usage.ms / 1000).toFixed(1)} s`;
+    $('#instruction').value = '';
+    await load();
+  } catch (err) { $('#refErr').textContent = err.message; $('#refErr').hidden = false; }
+  btn.disabled = false; btn.textContent = 'Apply change';
+};
+
+if (params.get('new')) toast('Your app is live. Connect Stripe to take payments.', 4500);
+if (params.get('connected')) toast('Back from Stripe.');
+await load().catch((e) => { $('#noKey').textContent = e.message; $('#noKey').hidden = false; });
+setInterval(() => document.visibilityState === 'visible' && load().catch(() => {}), 8000);
+</script>
+</body>
+</html>
