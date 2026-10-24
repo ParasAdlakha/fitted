@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Fitted slides</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap">
+<style>
+/* Source for every slide and graphic. Each .frame is rendered to a PNG by render.mjs. */
+:root{--bg:#f7f6f3;--surface:#fff;--ink:#1c1b19;--ink-2:#55524b;--ink-3:#8a867c;--line:#e4e1da;--accent:#5b4cf0;--stripe:#635bff;--supa:#3ecf8e;--warn:#c2410c;
+  --display:"Bricolage Grotesque",Inter,sans-serif;--sans:Inter,system-ui,sans-serif;--mono:"JetBrains Mono",ui-monospace,monospace}
+*{box-sizing:border-box}
+body{margin:0;background:#888;font-family:var(--sans);color:var(--ink);-webkit-font-smoothing:antialiased}
+.frame{background:var(--bg);position:relative;overflow:hidden;margin:0 0 40px}
+.slide{width:1920px;height:1080px;padding:84px 110px;display:flex;flex-direction:column}
+h1,h2,h3{font-family:var(--display);margin:0;letter-spacing:-.025em;line-height:1.02}
+p{margin:0}
+.kicker{font:600 22px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+.head{display:flex;align-items:baseline;gap:28px;margin-bottom:56px}
+.head h2{font-size:72px;font-weight:700}
+.head .sub{font:500 40px/1 var(--display);color:var(--ink-3)}
+.logo{display:flex;align-items:center;gap:16px;font:700 44px/1 var(--display);letter-spacing:-.02em}
+.logo i{width:56px;height:56px;border-radius:15px;background:var(--ink);color:var(--bg);display:grid;place-items:center;font-style:normal;font-size:34px}
+.card{background:var(--surface);border:2px solid var(--line);border-radius:28px;padding:34px 38px}
+.shot{object-position:center top;border-radius:22px;border:2px solid var(--line);box-shadow:0 30px 60px -30px rgba(28,27,25,.35);display:block;background:#fff;object-fit:cover;object-position:top left}
+.pill{display:inline-flex;align-items:center;gap:12px;font:600 21px/1 var(--mono);padding:14px 20px;border-radius:999px;border:2px solid var(--line);background:var(--surface);white-space:nowrap}
+.pill b{width:12px;height:12px;border-radius:50%;display:inline-block}
+.foot{margin-top:auto;display:flex;justify-content:space-between;font:500 22px/1 var(--mono);color:var(--ink-3);letter-spacing:.04em}
+.big{font:800 92px/1 var(--display);letter-spacing:-.04em}
+.em{color:var(--accent)}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+.stat b{display:block;font:700 76px/1 var(--display);letter-spacing:-.03em;margin-bottom:14px}
+.stat p{font-size:27px;line-height:1.35;color:var(--ink-2)}
+.stat small{display:block;margin-top:14px;font:500 18px/1.3 var(--mono);color:var(--ink-3)}
+.flow{display:flex;gap:14px;align-items:stretch}
+.step{flex:1;background:var(--surface);border:2px solid var(--line);border-radius:22px;padding:22px 22px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.step .n{font:600 18px/1 var(--mono);color:var(--ink-3)}
+.step h3{font-size:34px}
+.step p{font-size:21px;line-height:1.35;color:var(--ink-2)}
+.step.s{border-color:var(--stripe)} .step.s .n{color:var(--stripe)}
+.step.d{border-color:var(--supa)} .step.d .n{color:#1f9d63}
+.step.a{border-color:var(--accent)} .step.a .n{color:var(--accent)}
+ul.list{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:18px}
+ul.list li{font-size:28px;line-height:1.35;padding-left:34px;position:relative;color:var(--ink-2)}
+ul.list li::before{content:"";position:absolute;left:0;top:14px;width:14px;height:14px;border-radius:4px;background:var(--accent)}
+ul.list li b{color:var(--ink)}
+code,.code{font-family:var(--mono)}
+.sql{font:500 23px/1.5 var(--mono);background:#1c1b19;color:#ecebe6;border-radius:20px;padding:28px 32px;white-space:pre}
+.sql .k{color:#a5b4fc}.sql .c{color:#8a867c}.sql .g{color:var(--supa)}
+table.cost{border-collapse:collapse;width:100%;font-size:27px}
+table.cost td{padding:18px 0;border-bottom:2px solid var(--line)}
+table.cost td:last-child{text-align:right;font:600 30px/1 var(--display);white-space:nowrap}
+table.cost tr:last-child td{border-bottom:0}
+.person{display:flex;flex-direction:column;gap:14px}
+.person h3{font-size:50px}
+.person .role{font:600 22px/1.3 var(--mono);color:var(--accent);letter-spacing:.04em;text-transform:uppercase}
+.person p{font-size:27px;line-height:1.4;color:var(--ink-2)}
+.dots{position:absolute;inset:0;background-image:radial-gradient(#e3e0d8 1.6px,transparent 1.6px);background-size:30px 30px;opacity:.7;pointer-events:none}
+.label{font:600 20px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+</style>
+</head>
+<body>
+
+<!-- 1. Title -->
+<section class="frame slide" id="s1">
+  <div class="dots"></div>
+  <div style="position:relative;display:flex;flex-direction:column;height:100%">
+    <div class="row" style="display:flex;justify-content:space-between;align-items:center">
+      <div class="logo"><i>F</i>Fitted</div>
+      <span class="kicker">Stripe × Supabase · AI Payments for the Real Economy · Berlin · 24 Oct 2026</span>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 760px;gap:56px;align-items:center;margin-top:70px;flex:1">
+      <div style="display:flex;flex-direction:column;gap:40px">
+        <h1 class="big">Describe your business.<br>Get software that <span class="em">fits&nbsp;it.</span></h1>
+        <p style="font-size:34px;line-height:1.4;color:var(--ink-2);max-width:900px">One paragraph in, a booking app out: courts, bikes or stylists. Customers pay the owner through Stripe Connect. Supabase makes double bookings impossible.</p>
+        <div style="display:flex;gap:14px;flex-wrap:wrap">
+          <span class="pill"><b style="background:var(--accent)"></b>AI: spec, not code</span>
+          <span class="pill"><b style="background:var(--stripe)"></b>Stripe Connect</span>
+          <span class="pill"><b style="background:var(--supa)"></b>Supabase Postgres</span>
+        </div>
+      </div>
+      <img class="shot" src="../img/book-spin.png" style="width:760px;height:528px">
+    </div>
+    <div class="foot"><span>Paras Adlakha · Harshita Adlakha</span><span>github.com/ParasAdlakha/fitted</span></div>
+  </div>
+</section>
+
+<!-- 2. Problem -->
+<section class="frame slide" id="s2">
+  <div class="head"><h2>The problem</h2><span class="sub">small businesses get software that doesn't fit</span></div>
+  <div class="grid3" style="margin-bottom:44px">
+    <div class="card stat"><b>34M</b><p>EU enterprises in 2024; <b style="display:inline;font:inherit;color:var(--ink)">99%</b> have fewer than 50 people.</p><small>Eurostat, via Portugal Global</small></div>
+    <div class="card stat"><b>15–25%</b><p>of salon appointments are no-shows (10–20% at fitness studios) when nobody pays upfront.</p><small>Vendor data, SchedulingKit · directional</small></div>
+    <div class="card stat"><b>~45%</b><p>fewer no-shows when customers pay a deposit or upfront when they book.</p><small>Square data, via SchedulingKit · directional</small></div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:28px;flex:1">
+    <div class="card" style="display:flex;flex-direction:column;gap:18px"><span class="label">Option A · vertical software</span><h3 style="font-size:46px">One industry, one subscription</h3><p style="font-size:27px;line-height:1.4;color:var(--ink-2)">Court software for the padel club, salon software for the salon, studio software for the gym. Expensive, rigid, and built for someone else's business.</p></div>
+    <div class="card" style="display:flex;flex-direction:column;gap:18px"><span class="label">Option B · generic tools</span><h3 style="font-size:46px">Calendar link + WhatsApp + bank transfer</h3><p style="font-size:27px;line-height:1.4;color:var(--ink-2)">No bike map, double-booked courts, nobody paid upfront, no-shows. It doesn't understand the business at all.</p></div>
+  </div>
+</section>
+
+<!-- 3. AI adapts -->
+<section class="frame slide" id="s3">
+  <div class="head"><h2>AI adapts the product</h2><span class="sub">one engine, three businesses</span></div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:28px;flex:1;min-height:0">
+    <div style="display:flex;flex-direction:column;gap:16px;min-height:0"><img class="shot" src="../img/book-padel.png" style="width:100%;aspect-ratio:1180/820;height:auto"><span class="label">resource · padel club</span><p style="font-size:24px;line-height:1.4;color:var(--ink-2)">"4 courts, 2 indoor, €32 a match, €40 after 5pm"<br>→ court map, 90-min slots, peak price, indoor +€4</p></div>
+    <div style="display:flex;flex-direction:column;gap:16px;min-height:0"><img class="shot" src="../img/book-spin.png" style="width:100%;aspect-ratio:1180/820;height:auto"><span class="label">class · spin studio</span><p style="font-size:24px;line-height:1.4;color:var(--ink-2)">"18 bikes in 3 rows facing the instructor"<br>→ bike map, class schedule, live taken seats</p></div>
+    <div style="display:flex;flex-direction:column;gap:16px;min-height:0"><img class="shot" src="../img/book-salon.png" style="width:100%;aspect-ratio:1180/820;height:auto"><span class="label">staff · salon</span><p style="font-size:24px;line-height:1.4;color:var(--ink-2)">"Mira does colour, Jonas and Lea do fades"<br>→ stylist cards, services limited to the right people</p></div>
+  </div>
+  <div class="card" style="margin-top:28px;display:flex;gap:40px;align-items:center;padding:26px 34px">
+    <span class="label" style="flex:none">How</span>
+    <p style="font-size:26px;line-height:1.4;color:var(--ink-2)">The model fills in a <b style="color:var(--ink)">strict JSON schema</b> (OpenAI structured outputs), and our normalizer checks and repairs it. A single tested renderer runs every spec. <b style="color:var(--ink)">No generated code</b>. Changes are plain words too: "Add a Sunday 11:00 class. Front-row bikes €4 more."</p>
+  </div>
+</section>
+
+<!-- 4. Stripe + Supabase -->
+<section class="frame slide" id="s4">
+  <div class="head"><h2>Stripe and Supabase power it</h2></div>
+  <div class="flow" style="margin-bottom:36px">
+    <div class="step a"><span class="n">01 · AI</span><h3>Describe</h3><p>Paragraph → spec, about $0.002</p></div>
+    <div class="step d"><span class="n">02 · SUPABASE</span><h3>Publish</h3><p>Business row + spec as jsonb, versioned</p></div>
+    <div class="step s"><span class="n">03 · STRIPE CONNECT</span><h3>Onboard</h3><p>Express account, Stripe-hosted KYC</p></div>
+    <div class="step d"><span class="n">04 · SUPABASE</span><h3>Hold</h3><p><code>book_slot()</code> holds the unit 15 min</p></div>
+    <div class="step s"><span class="n">05 · STRIPE CONNECT</span><h3>Pay</h3><p>Checkout → owner's account, 3% fee</p></div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:28px;flex:1">
+    <div class="card" style="display:flex;flex-direction:column;gap:20px;border-color:var(--stripe)">
+      <span class="label" style="color:var(--stripe)">Stripe Connect</span>
+      <ul class="list">
+        <li><b>Express account per business</b>, onboarding and payouts handled by Stripe</li>
+        <li><b>Destination charges:</b> <code>transfer_data.destination</code> = the owner</li>
+        <li><b>Platform revenue:</b> <code>application_fee_amount</code> = 3%</li>
+        <li><b>Webhooks:</b> session completed, expired (frees the slot), account updated</li>
+      </ul>
+    </div>
+    <div class="card" style="display:flex;flex-direction:column;gap:20px;border-color:var(--supa)">
+      <span class="label" style="color:#1f9d63">Supabase · the database is the referee</span>
+      <div class="sql"><span class="k">constraint</span> no_overlap <span class="k">exclude using</span> gist (
+  business_id  <span class="k">with</span> =,
+  resource_key <span class="k">with</span> =,
+  tstzrange(starts_at, ends_at) <span class="k">with</span> &amp;&amp;
+) <span class="k">where</span> (status &lt;&gt; <span class="g">'cancelled'</span>)</div>
+      <p style="font-size:24px;line-height:1.4;color:var(--ink-2)">Two people tap bike 3 at the same second: Postgres accepts one, the other gets "just taken". RLS locks every table; one schema serves every kind of business.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 5. Costs -->
+<section class="frame slide" id="s5">
+  <div class="head"><h2>How we keep costs low</h2></div>
+  <div style="display:grid;grid-template-columns:1.05fr 1fr;gap:40px;flex:1">
+    <div class="card" style="display:flex;flex-direction:column;gap:12px;align-self:start">
+      <span class="label">Cost per business</span>
+      <table class="cost">
+        <tr><td>AI to set up the app (one call)</td><td>$0.002</td></tr>
+        <tr><td>AI per plain-words change</td><td>$0.002</td></tr>
+        <tr><td>AI per customer booking</td><td style="color:#1f9d63">$0</td></tr>
+        <tr><td>Generated code to host or deploy</td><td style="color:#1f9d63">none</td></tr>
+        <tr><td>Infrastructure per extra business</td><td style="color:#1f9d63">one row</td></tr>
+      </table>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:24px">
+      <div class="card"><ul class="list">
+        <li><b>AI at setup, not per booking.</b> Cost stays flat as bookings grow</li>
+        <li><b>Small model, minimal reasoning,</b> strict schema: ~2,500 tokens, 8–12 s</li>
+        <li><b>Metered and shown</b> to the owner on the dashboard (<code>ai_calls</code>)</li>
+        <li><b>Revenue from payments:</b> a 3% Connect fee, no subscription to justify</li>
+      </ul></div>
+      <div class="card" style="background:var(--ink);color:var(--bg);border-color:var(--ink)"><span class="label" style="color:#bdb9ae">Example · padel club</span><p style="font-size:30px;line-height:1.35;margin-top:14px">300 bookings × €32 = €9,600 a month through Stripe. 3% = <b>€288 a month</b> to the platform, against <b>$0.012</b> of AI spent once.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 6. Team -->
+<section class="frame slide" id="s6">
+  <div class="head"><h2>Why us</h2><span class="sub">systems thinkers who ship</span></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:28px">
+    <div class="card person"><span class="role">Engine · Stripe · Supabase</span><h3>Paras Adlakha</h3><p>Aerospace, electronics, systems engineering. Treats a booking like a safety-critical record: one source of truth, constraints in the database, nothing trusted from the model without checks.</p></div>
+    <div class="card person"><span class="role">Research · product · AI spec</span><h3>Harshita Adlakha</h3><p>System dynamics, socio-technical systems. Mapped dozens of small businesses onto three shapes (resource, class, staff), the insight that lets one engine serve them all.</p></div>
+  </div>
+  <div class="card" style="margin-top:28px;display:flex;gap:40px;align-items:center">
+    <span class="label" style="flex:none">Track record</span>
+    <p style="font-size:26px;line-height:1.4;color:var(--ink-2)">Yesterday: <b style="color:var(--ink)">LineCheck</b>, an AI inspector aircraft technicians call on FaceTime (Beta Fund × AWS × OpenAI hackathon, SF). Today: Fitted, with 12 tests passing and a working Stripe Connect flow.</p>
+  </div>
+  <div class="foot" style="font-size:26px"><span>Try it: describe a business → book → pay with 4242 4242 4242 4242</span><span>github.com/ParasAdlakha/fitted</span></div>
+</section>
+
+<!-- Graphic: three apps (README hero, 2400×1260) -->
+<section class="frame" id="g-three" style="width:2400px;height:840px;padding:80px 90px;display:flex;flex-direction:column;gap:46px">
+  <div class="dots"></div>
+  <div style="position:relative;display:flex;justify-content:space-between;align-items:center"><div class="logo"><i>F</i>Fitted</div><span class="kicker" style="font-size:26px">One engine · three businesses · each from one paragraph</span></div>
+  <div style="position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:40px;flex:1">
+    <figure style="margin:0;display:flex;flex-direction:column;gap:20px"><img class="shot" src="../img/book-padel.png" style="width:100%;aspect-ratio:1180/820;height:auto"><figcaption class="label" style="font-size:24px">🎾 Padel club · courts</figcaption></figure>
+    <figure style="margin:0;display:flex;flex-direction:column;gap:20px"><img class="shot" src="../img/book-spin.png" style="width:100%;aspect-ratio:1180/820;height:auto"><figcaption class="label" style="font-size:24px">🚴 Spin studio · bike map</figcaption></figure>
+    <figure style="margin:0;display:flex;flex-direction:column;gap:20px"><img class="shot" src="../img/book-salon.png" style="width:100%;aspect-ratio:1180/820;height:auto"><figcaption class="label" style="font-size:24px">💇 Salon · staff</figcaption></figure>
+  </div>
+</section>
+
+<!-- Graphic: LinkedIn cover (1600×2000) -->
+<section class="frame" id="g-cover" style="width:1600px;height:2000px;padding:96px 96px;display:flex;flex-direction:column;gap:46px">
+  <div class="dots"></div>
+  <div style="position:relative;display:flex;flex-direction:column;gap:46px;height:100%">
+    <span class="kicker" style="font-size:22px">Stripe × Supabase Hack · Berlin · Oct 24, 2026</span>
+    <div class="logo" style="font-size:110px;gap:30px"><i style="width:120px;height:120px;border-radius:32px;font-size:76px">F</i>Fitted</div>
+    <h1 style="font:800 92px/1 var(--display);letter-spacing:-.035em">Describe your business.<br>Get booking software that <span class="em">fits&nbsp;it.</span></h1>
+    <div style="display:flex;gap:14px;flex-wrap:wrap">
+      <span class="pill" style="font-size:28px">🎾 Courts</span><span class="pill" style="font-size:28px">🚴 Bike map</span><span class="pill" style="font-size:28px">💇 Stylists</span><span class="pill" style="font-size:28px;border-color:var(--stripe)">Stripe Connect</span><span class="pill" style="font-size:28px;border-color:var(--supa)">Supabase</span>
+    </div>
+    <div style="position:relative;flex:1">
+      <img class="shot" src="../img/owner-generated.png" style="position:absolute;right:0;top:0;width:1080px;height:860px">
+      <img class="shot" src="../img/book-spin.png" style="position:absolute;left:0;bottom:30px;width:900px;height:620px;border:4px solid var(--accent)">
+      <span style="position:absolute;left:0;bottom:668px;background:var(--accent);color:#fff;font:600 30px/1 var(--mono);letter-spacing:.08em;padding:16px 22px;border-radius:10px">GENERATED FROM ONE PARAGRAPH</span>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:end;border-top:2px solid var(--line);padding-top:36px">
+      <div><span class="label" style="font-size:24px">Built with</span><p style="font:500 40px/1.3 var(--display);margin-top:14px">Stripe Connect · Supabase · OpenAI</p></div>
+      <div style="text-align:right"><span class="label" style="font-size:24px">Team</span><p style="font:500 40px/1.3 var(--display);margin-top:14px">Paras & Harshita Adlakha</p></div>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fitted · Booking software that fits your business</title>
+<meta name="description" content="Describe your business in one paragraph; get booking software that fits it. Stripe Connect, Supabase and AI. Built at the Stripe × Supabase hack in Berlin.">
+<meta property="og:image" content="img/linkedin-cover.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%231c1b19'/%3E%3Cpath d='M11 9h11v3.2h-7.4v3.4h6.6v3.1h-6.6V24H11z' fill='%23f7f6f3'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Project page: one reading column, wide media. Light only, matching the product. */
+:root{--bg:#f7f6f3;--surface:#fff;--line:#e4e1da;--ink:#1c1b19;--ink-2:#55524b;--ink-3:#8a867c;--accent:#5b4cf0;--stripe:#635bff;--supa:#1f9d63;
+  --display:"Bricolage Grotesque",Inter,system-ui,sans-serif;--sans:Inter,system-ui,sans-serif;--mono:"JetBrains Mono",ui-monospace,monospace}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.6 var(--sans);-webkit-font-smoothing:antialiased}
+a{color:var(--accent)}
+.wrap{max-width:1080px;margin:0 auto;padding:24px 16px 80px;display:flex;flex-direction:column;gap:64px}
+nav{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:10px;font:700 1.25rem/1 var(--display);letter-spacing:-.02em;color:var(--ink);text-decoration:none}
+.logo i{width:30px;height:30px;border-radius:9px;background:var(--ink);color:var(--bg);display:grid;place-items:center;font-style:normal}
+.links{display:flex;gap:8px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:10px;font-weight:600;text-decoration:none;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+.btn.dark{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+h1,h2,h3{font-family:var(--display);letter-spacing:-.025em;line-height:1.05;margin:0;text-wrap:balance}
+h1{font-size:clamp(2.3rem,6vw,4.2rem);font-weight:800}
+h2{font-size:clamp(1.6rem,3.5vw,2.3rem)}
+h3{font-size:1.2rem}
+p{margin:0;max-width:68ch}
+.lede{font-size:1.15rem;color:var(--ink-2)}
+.kicker{font:500 .75rem/1.4 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+.em{color:var(--accent)}
+section{display:flex;flex-direction:column;gap:20px}
+video,.shot{width:100%;border-radius:16px;border:1px solid var(--line);background:#fff;box-shadow:0 24px 50px -30px rgba(28,27,25,.4);display:block}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.card .n{font:500 .75rem/1 var(--mono);letter-spacing:.08em;color:var(--ink-3)}
+.card p{color:var(--ink-2);font-size:.95rem}
+.card.s{border-top:3px solid var(--stripe)}.card.d{border-top:3px solid var(--supa)}.card.a{border-top:3px solid var(--accent)}
+pre{margin:0;background:var(--ink);color:#ecebe6;border-radius:14px;padding:18px 20px;overflow-x:auto;font:500 .88rem/1.6 var(--mono)}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:520px;font-size:.95rem}
+th,td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:500 .72rem/1.2 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);background:#f1efea}
+tr:last-child td{border-bottom:0}
+td.r{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:600}
+footer{font-size:.85rem;color:var(--ink-3);border-top:1px solid var(--line);padding-top:20px}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <nav>
+    <a class="logo" href="#"><i>F</i>Fitted</a>
+    <div class="links"><a class="btn" href="slides/Fitted-slides.pdf">Slides</a><a class="btn dark" href="https://github.com/ParasAdlakha/fitted">GitHub</a></div>
+  </nav>
+
+  <header style="display:flex;flex-direction:column;gap:20px">
+    <span class="kicker">Stripe × Supabase · AI Payments for the Real Economy · Berlin · 24 Oct 2026</span>
+    <h1>Describe your business. Get booking software that <span class="em">fits&nbsp;it.</span></h1>
+    <p class="lede">A small-business owner writes one paragraph. Fitted turns it into a booking app, whether courts, a bike map or stylists. Customers pay the owner through Stripe Connect, and Supabase makes double bookings impossible.</p>
+  </header>
+
+  <section>
+    <video controls preload="metadata" poster="slides/s1.png" src="video/Fitted-demo.mp4"></video>
+    <p class="kicker">Two-minute demo: describe → generate → publish → change in plain words → book and pay → no double booking</p>
+  </section>
+
+  <section>
+    <h2>One engine, three businesses</h2>
+    <img class="shot" src="img/three-apps.png" alt="Three booking apps generated by Fitted: a padel club with courts, a spin studio with a bike map, a salon with stylists">
+    <div class="grid3">
+      <div class="card"><span class="n">RESOURCE</span><h3>🎾 Padel club</h3><p>"4 courts, 2 indoor, €32 a match, €40 after 5pm" → court map, 90-minute slots, peak price, indoor +€4.</p></div>
+      <div class="card"><span class="n">CLASS</span><h3>🚴 Spin studio</h3><p>"18 bikes in 3 rows facing the instructor" → bike map, class schedule, live taken seats.</p></div>
+      <div class="card"><span class="n">STAFF</span><h3>💇 Salon</h3><p>"Mira does colour, Jonas and Lea do fades" → stylist cards, services limited to the right people.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>How it works</h2>
+    <div class="grid3">
+      <div class="card a"><span class="n">AI</span><h3>A spec, not code</h3><p>OpenAI structured outputs fill a strict JSON schema; our normalizer checks and repairs it. One tested renderer runs every spec.</p></div>
+      <div class="card s"><span class="n">STRIPE CONNECT</span><h3>Paid straight to the owner</h3><p>Express account per business, Stripe-hosted onboarding, Checkout with a destination charge and a 3% application fee.</p></div>
+      <div class="card d"><span class="n">SUPABASE</span><h3>The database is the referee</h3><p>Postgres stores specs, versions and bookings. An exclusion constraint makes overlapping bookings impossible.</p></div>
+    </div>
+<pre>constraint no_overlap exclude using gist (
+  business_id  with =,
+  resource_key with =,
+  tstzrange(starts_at, ends_at) with &amp;&amp;
+) where (status &lt;&gt; 'cancelled')</pre>
+    <img class="shot" src="img/owner-generated.png" alt="Owner dashboard with Stripe status, AI cost, plain-words changes and version history">
+  </section>
+
+  <section>
+    <h2>How we keep costs low</h2>
+    <div class="tbl"><table>
+      <thead><tr><th>Cost</th><th style="text-align:right">Per business</th></tr></thead>
+      <tbody>
+        <tr><td>AI to set up the app (one call, gpt-5-mini, ~2,500 tokens)</td><td class="r">≈ $0.002</td></tr>
+        <tr><td>AI per plain-words change</td><td class="r">≈ $0.002</td></tr>
+        <tr><td>AI per customer booking</td><td class="r">$0</td></tr>
+        <tr><td>Generated code to build, host or deploy</td><td class="r">none</td></tr>
+        <tr><td>Infrastructure per extra business</td><td class="r">one row</td></tr>
+      </tbody>
+    </table></div>
+    <p class="lede">Revenue comes from the Stripe Connect application fee, so owners pay nothing until their customers do.</p>
+  </section>
+
+  <section>
+    <h2>Team</h2>
+    <div class="grid3">
+      <div class="card"><h3>Paras Adlakha</h3><p>Aerospace, electronics, systems engineering. Engine, Stripe Connect and Supabase.</p></div>
+      <div class="card"><h3>Harshita Adlakha</h3><p>System dynamics, socio-technical systems. Research, product and AI spec design.</p></div>
+    </div>
+  </section>
+
+  <footer>Fitted is a hackathon prototype built in one day. Source, setup and references are on <a href="https://github.com/ParasAdlakha/fitted">GitHub</a>.</footer>
+</main>
+</body>
+</html>
