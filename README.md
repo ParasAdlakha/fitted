@@ -6,7 +6,7 @@ A small-business owner writes one paragraph: "padel club, 4 courts, €32 a matc
 
 Built by **Paras Adlakha** and **Harshita Adlakha** for **Stripe × Supabase: AI Payments for the Real Economy Hack**, Berlin, October 24, 2026.
 
-**▶ [Two-minute demo video](docs/video/Fitted-demo.mp4)** · **📑 [Slides (PDF)](docs/slides/Fitted-slides.pdf)** · [PowerPoint](docs/slides/Fitted-slides.pptx) · [Project page](https://parasadlakha.github.io/fitted/)
+**🎬 [Narrated 2-minute demo](docs/video/Fitted-demo-2min.mp4)** · [3-minute pitch video](docs/video/Fitted-pitch-3min.mp4) · [Captioned walkthrough (silent)](docs/video/Fitted-demo.mp4) · **📑 [Slides (PDF)](docs/slides/Fitted-slides.pdf)** · [PowerPoint](docs/slides/Fitted-slides.pptx) · [Project page](https://parasadlakha.github.io/fitted/)
 
 ![The same engine, three businesses](docs/img/three-apps.png)
 
